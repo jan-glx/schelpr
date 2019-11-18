@@ -1,0 +1,24 @@
+Package: cropSeqULIhelpeR
+Title: Helper package for analysis of CROP-seq-ULI data
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Jan",
+           family = "gleixner",
+           role = c("aut", "cre"),
+           email = "jan.gleinxer@gmail.com",
+           comment = c(ORCID = "0000-0001-5006-7375"))
+Description: What the package does (one paragraph).
+Imports:
+  data.table,
+  fitdistrplus,
+  gamlss,
+  gamlss.tr,
+  ggpointdensity (>= 0.1.0),
+  ShortRead
+Remotes:
+  LKremer/ggpointdensity
+BiocViews: 
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.0
