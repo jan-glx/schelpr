@@ -8,6 +8,8 @@ Authors@R:
            email = "jan.gleinxer@gmail.com",
            comment = c(ORCID = "0000-0001-5006-7375"))
 Description: What the package does (one paragraph).
+Depends:
+  Seurat
 Imports:
   data.table,
   fitdistrplus,
