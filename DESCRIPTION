@@ -12,13 +12,16 @@ Depends:
   Seurat
 Imports:
   data.table,
+  emo,
   fitdistrplus,
   gamlss,
   gamlss.tr,
+  ggbeeswarm,
   ggpointdensity (>= 0.1.0),
   ShortRead
 Remotes:
-  LKremer/ggpointdensity
+  LKremer/ggpointdensity,
+  hadley/emo
 BiocViews: 
 License: MIT
 Encoding: UTF-8

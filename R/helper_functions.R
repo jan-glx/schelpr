@@ -1,3 +1,9 @@
+
+#' @importFrom magrittr `%<>%` `%>%` 
+#' @import rlang
+NULL
+
+
 #source: https://github.com/lonsbio/fastqe
 fastq_emoji_map_binned= c(
   '!'= 'no_entry_sign',
@@ -66,7 +72,6 @@ fastq2emoji <- function(x) do.call(paste0,lapply(tstrsplit(x, split=""), functio
 
 
 #' @export
-#' @importFrom magrittr %>%
 seq2vec <- function(seq) seq %>% str_replace_all("A", "4000") %>% str_replace_all("C", "0400") %>% str_replace_all("G", "0040") %>% str_replace_all("T", "0004") %>% str_replace_all("N", "1111") %>% tstrsplit("") %>% lapply(as.integer) %>% do.call(cbind, .) %>% `/`(4)
 
 
@@ -194,7 +199,7 @@ FindLowNoiseFeatures.Seurat <- function (object, assay = NULL, selection.method 
 #' 
 #' #' @importFrom rlang %||%
 #' #' @import Seurat
-#' #' @import magrittr %>% %<>%
+#' #' @importFrom magrittr %>% %<>%
 #' #' @export
 #' FindLowNoiseFeatures <- function(object, nfeatures = 5000, assay = NULL, subset=NULL){
 #'   subset <-  subset %||% TRUE
@@ -222,7 +227,6 @@ FindLowNoiseFeatures.Seurat <- function (object, assay = NULL, selection.method 
 #'   object
 #' }
 
-#' @import magrittr
 #' @import Seurat
 #' @export
 WeightData <- function(object, assay = NULL){
@@ -236,36 +240,11 @@ WeightData <- function(object, assay = NULL){
 
 }
 
-
-
-
 #' @export
-render_separately <- function(...)  callr::r(function(...) rmarkdown::render(..., envir = globalenv()), args = list(...), show = TRUE)
-
+scale_color_d3 <- ggsci::scale_color_d3
 #' @export
-knit_all_formats <- function(rmd_file, params_=list(), figure_formats=c("png", "pdf", "svg")) {
-  rmd_file_plain <- fs::path_ext_remove(fs::path_file(rmd_file))
-  
-  params_string <- gsub(" +", " ", paste(deparse(params_[seq_along(params_)]), collapse=""))
-  params_hash <- substr(digest::digest(params_string), 1, 8)
-  results_dir <- fs::path("results", fs::path_sanitize(rmd_file_plain), fs::path_sanitize(params_hash))
-  fs::dir_create(results_dir)
-  cat(params_string, file = fs::path(results_dir, "params.txt"))
-  cat(params_string, file = fs::path(results_dir,  substr(paste0(fs::path_sanitize(params_string), ext="txt"), 1,50)))
-  
-  lapply(
-    figure_formats,
-    function(figure_format) render_separately(
-      input = rmd_file,
-      params = c(params_, results_dir=results_dir),
-      output_file = paste0(rmd_file_plain, "_", figure_format),
-      output_format = rmarkdown::html_document(dev=figure_format, keep_md=TRUE),
-      output_dir = fs::path(results_dir), 
-      encoding = 'UTF-8'
-    )
-  )
-  results_dir
-}
+scale_fill_d3 <- ggsci::scale_fill_d3
+
 
 #' @export
 geom_densityjitter <- purrr::partial(ggbeeswarm::geom_quasirandom, method = "pseudorandom")
