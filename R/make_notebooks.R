@@ -1,7 +1,9 @@
-#'  These ar used by most functions in this file
-#' @import rlang
-#' @importFrom magrittr `%>%` `%<>%`
-NULL
+#' @export
+new_analysis <- function(name="analysis") {
+  rval <- list(name=name, notebooks=character(0), dependencies=list())
+  class(rval) <- "analysis"
+  rval
+}
 
 #' @export
 add_notebook <- function(object, ...){
@@ -50,11 +52,13 @@ hash_params <- function(params) {
 }
 
 #' @export
-bind_parameters <- function(analysis, output_dir, figure_format="png", discard_results = FALSE,...){
-  all_params <- as.list(enquos(...))
+bind_parameters <- function(analysis, ..., output_dir="results", parameter_set_name=analysis$name){
+  all_params <- as.list(enexprs(...))
   unused_params <- all_params
-  analysis$commands <- list()
+  analysis$params <- list()
   analysis$out_file <- list()
+  analysis$out_dir <- list()
+  analysis$file_dependencies <- list()
   for(notebook in names(analysis$notebooks)) {
     notebook_file <- analysis$notebooks[[notebook]]
     params <- rmarkdown::yaml_front_matter(fs::path("notebooks", notebook_file))$params
@@ -75,21 +79,24 @@ bind_parameters <- function(analysis, output_dir, figure_format="png", discard_r
     this_notebook_params[names(params)] <- augmented_params[names(params)]
     this_notebook_params_hash <- hash_params(this_notebook_params)
     results_dir <- fs::path(output_dir, fs::path_sanitize(fs::path_ext_remove(notebook_file)), fs::path_sanitize(this_notebook_params_hash))
-    this_notebook_params$results_dir <- if(discard_results) tempdir() else results_dir
+    this_notebook_params$results_dir <- results_dir
+    
+    
+    fs::dir_create(results_dir)
+    sym_link_from <- fs::path(output_dir, fs::path_sanitize(fs::path_ext_remove(notebook_file)), parameter_set_name)
+    tryCatch(fs::link_delete(sym_link_from), error = function(e) NULL)
+    fs::link_create(fs::path_sanitize(this_notebook_params_hash), sym_link_from)
+    params_string <- gsub(" +", " ", paste(deparse(this_notebook_params[sort(names(this_notebook_params))]), collapse=""))
+    cat(params_string, file = fs::path(results_dir, "params.txt"))
+    fs::file_create(fs::path(results_dir,  substr(fs::path_sanitize(params_string), 1, 50)))
     
     #save results_dir for dependent
     all_params[notebook] <- results_dir
-    out_file <- fs::path(results_dir, paste0(fs::path_ext_remove(notebook_file), "_", figure_format, ".html"))
-    analysis$out_file[[notebook]] <- out_file
-    ###################################################################################
-    analysis$commands[[notebook]] <- expr(rmarkdown::render(
-      input = !!(fs::path("notebooks", notebook_file)),
-      output_format = rmarkdown::html_document(dev=!!figure_format, keep_md=TRUE),
-      output_file = !!out_file,
-      output_dir = !!results_dir, 
-      params=!!this_notebook_params
-      ))
-    ####################################################################################
+    
+    analysis$params[[notebook]] <- this_notebook_params
+    analysis$out_file[[notebook]] <- fs::path(results_dir, fs::path_ext_set(notebook_file, "html"))
+    analysis$out_dir[[notebook]] <- results_dir
+    analysis$file_dependencies[[notebook]] <- analysis$out_file[analysis$dependencies[[notebook]]]
   }
   if(length(unused_params)>0) message(length(unused_params), " parameter(s) supplied but not used: ", paste0(names(unused_params),  collapse=", "))
   analysis
@@ -99,34 +106,68 @@ expr_to_shell <- function(expr) {
   paste0("Rscript -e '", gsub(pattern = "'", replacement = "'''", paste0(deparse(expr), collapse="")) ,"'")
 }
 
-#' @export
-generate_makefile <- function(analysis, alt_dependencies = analysis, analysis_name = deparse(substitute(analysis))) {
-  substitute_out_files <- analysis$out_file
-  substitute_out_files[names(alt_dependencies$out_file)] <- alt_dependencies$out_file
-  paste0(analysis_name, ":", paste0(" ", analysis$out_file, collapse=""), "\n") %>% 
-    c(sapply(names(analysis$notebooks), function(notebook) { 
-      paste0(analysis$out_file[notebook], ": ", fs::path("notebooks", analysis$notebooks[[notebook]]) ,paste0(" ", substitute_out_files[analysis$dependencies[[notebook]]], collapse=""), "\n",
-             paste0("\t", expr_to_shell(analysis$commands[[notebook]]), collapse="\n"), "\n")
-    })) %>%
-    paste0(collapse="\n") %>%
-    cat(file=paste0(analysis_name, ".Makefile"))
-  if(!fs::file_exists("Makefile")) cat("include *.Makefile\n", file="Makefile")
-  invisible(NULL)
+
+gen_make_rule <- function(out, deps = character(0), recipe = character(0)) {
+  paste0(out, ":", paste0(sprintf(" %s", deps), collapse = ""), "\n", paste0(sprintf("\t%s\n", recipe), collapse=""))
+}
+
+#gen_format_expr
+
+gen_render_command <- function(notebook_file, output_file, output_dir, params, rmarkdown_params = NULL) {
+  rmarkdown_params <- rmarkdown_params %||% exprs(output_format = rmarkdown::html_document(dev="png", keep_md=TRUE))
+  render_expr <- expr(
+    rmarkdown::render(
+      input = !!notebook_file,
+      output_file = !!output_file,
+      output_dir = !!output_dir, 
+      params=!!params,
+      !!!rmarkdown_params
+    )
+  )
+  expr_to_shell(render_expr)
 }
 
 #' @export
-bind_and_make_all_formats <- function(analysis, ..., output_dir = "results", figure_formats = c("png", "svg", "pdf")) {
-  analysis_name <- paste0(deparse(substitute(anaysis)), collapse = "")
-  params <- enquos(...)
-  
-  cat(paste0(analysis_name, ":", paste0(" ", analysis_name, "_", figure_formats, collapse=" "), "\n"), file = paste0(analysis_name, ".Makefile"))
-  
-  main_analysis <- eval_tidy(expr(bind_parameters(analysis, output_dir = output_dir, figure_format = figure_formats[1], discard_results = FALSE, !!!params)))
-  generate_makefile(main_analysis, analysis_name = paste0(analysis_name, "_", figure_formats[1]))
-  lapply(figure_formats[-1], function(figure_format) {
-    expr(bind_parameters(analysis, output_dir = output_dir, figure_format = figure_format, discard_results = TRUE, !!!params)) %>% 
-      eval_tidy %>% generate_makefile(main_analysis, analysis_name = paste0(analysis_name, "_", figure_format))
-  })
+gen_make_rules <- function(analysis, rmarkdown_params = NULL, analysis_name = deparse(substitute(analysis))) {
+  c(gen_make_rule(analysis_name, analysis$out_file),
+    sapply(names(analysis$notebooks), function(notebook) { 
+      notebook_file <- fs::path("notebooks", analysis$notebooks[[notebook]])
+      gen_make_rule(
+        out = analysis$out_file[[notebook]], 
+        deps = c(notebook_file, analysis$file_dependencies[[notebook]]),
+        recipe = gen_render_command(
+          notebook_file = notebook_file,
+          output_file = analysis$out_file[[notebook]],
+          output_dir = analysis$out_dir[[notebook]],
+          params =  analysis$params[[notebook]],
+          rmarkdown_params = rmarkdown_params
+        ) 
+      )
+    })
+  ) %>% paste0(collapse="\n") 
+}
+
+#' @export
+make_all_formats <- function(analysis, figure_formats = c("png", "svg", "pdf"), 
+                             analysis_name = paste0(deparse(substitute(analysis)), collapse = ""), 
+                             makefile = paste0(analysis_name, ".mk")) {
+  all_rules <- 
+    c(
+      gen_make_rule(analysis_name, paste0(analysis_name, "_", figure_formats)),
+      gen_make_rules(analysis = analysis, analysis_name = paste0(analysis_name, "_", figure_formats[1])),
+      sapply(figure_formats[-1], function(figure_format) {
+        
+        analysis$params <- lapply(analysis$params, function(params) {
+          params$results_dir <- expr(tempdir())
+          params
+        })
+        analysis$out_file <- lapply(analysis$out_file, function(out_file) paste0(fs::path_ext_remove(out_file), "_", figure_format, ".", fs::path_ext(out_file)))
+        rmarkdown_params <- exprs(output_format = rmarkdown::html_document(dev="png"))
+        gen_make_rules(analysis = analysis, rmarkdown_params = rmarkdown_params, analysis_name = paste0(analysis_name, "_", figure_format))
+      })
+    )
+  cat(paste0(all_rules, collapse="\n"), file = makefile)
+  if(!fs::file_exists("Makefile")) cat("include *.mk\n", file="Makefile")
   invisible(NULL)
 }
 
