@@ -134,7 +134,7 @@ gen_make_rules <- function(analysis, rmarkdown_params = NULL, analysis_name = de
       notebook_file <- fs::path("notebooks", analysis$notebooks[[notebook]])
       gen_make_rule(
         out = analysis$out_file[[notebook]], 
-        deps = c(notebook_file, analysis$file_dependencies[[notebook]]),
+        deps = c(notebook_file, fs::path("notebooks", "setup_chunk.R"), analysis$file_dependencies[[notebook]]),
         recipe = gen_render_command(
           notebook_file = notebook_file,
           output_file = analysis$out_file[[notebook]],
@@ -145,6 +145,16 @@ gen_make_rules <- function(analysis, rmarkdown_params = NULL, analysis_name = de
       )
     })
   ) %>% paste0(collapse="\n") 
+}
+
+#' @export
+make_makefile <- function(analysis, 
+                  analysis_name = paste0(deparse(substitute(analysis)), collapse = ""),
+                  makefile = paste0(analysis_name, ".mk")) {
+  all_rules <- gen_make_rules(analysis = analysis, analysis_name = analysis_name)
+  cat(paste0(all_rules, collapse="\n"), file = makefile)
+  if(!fs::file_exists("Makefile")) cat("include *.mk\n", file="Makefile")
+  invisible(NULL)
 }
 
 #' @export

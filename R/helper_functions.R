@@ -262,5 +262,8 @@ quantile_ci <- function(y, q=0.5, alpha=0.95, na.rm=FALSE) {
 }
 
 
+#' @export
+fix_plot_limits <- function(p) p + coord_cartesian(xlim=ggplot_build(p)$layout$panel_params[[1]]$x.range, ylim=ggplot_build(p)$layout$panel_params[[1]]$y.range)
+
 
 

@@ -11,6 +11,7 @@ Description: What the package does (one paragraph).
 Depends:
   Seurat
 Imports:
+  COEF,
   data.table,
   emo,
   fitdistrplus,
@@ -19,9 +20,13 @@ Imports:
   ggbeeswarm,
   ggpointdensity (>= 0.1.0),
   ShortRead
+Suggests:
+  Best1990
 Remotes:
+  Russel88/COEF,
+  hadley/emo,
   LKremer/ggpointdensity,
-  hadley/emo
+  jan-glx/isoreg_best
 BiocViews: 
 License: MIT
 Encoding: UTF-8
