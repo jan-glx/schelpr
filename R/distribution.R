@@ -164,20 +164,31 @@ predictdf.Deming <- function(model, xseq, se, level) {
   }
 }
 
+
 #' @export
-isoreg_up <-  function(formula, data, ...) {
-  M <- model.frame(formula, data)
-  f <- as.stepfun(isoreg(M[,2], -M[,1]))
-  f2 <- function(x) -f(x)
-  class(f2) <- class(f)
-  f2
+isoreg_up <-  function(formula, data, subset, na.action, contrasts = NULL, ..., decreasing = FALSE) {
+  mf <- match.call(expand.dots = FALSE)
+  m <- match(c("formula", "data", "subset", "na.action"), names(mf), 0L)
+  mf <- mf[c(1L, m)]
+  mf$drop.unused.levels <- TRUE
+  mf[[1L]] <- quote(stats::model.frame)
+  mf <- eval(mf, parent.frame())
+  mt <- attr(mf, "terms")
+  attr(mt, "intercept") <- 0
+  y <- model.response(mf, "numeric")
+  x <- model.matrix(mt, mf, contrasts)
+  if(decreasing) y <- -y
+  ret <- if(ncol(x)==0) isoreg(y) else isoreg(x, y)
+  if(decreasing) {
+    ret$y <- -ret$y
+    ret$yf <- -ret$yf
+  }
+  as.stepfun(ret)
 }
 
 #' @export
-isoreg_down <-  function(formula, data, ...) {
-  M <- model.frame(formula, data)
-  as.stepfun(isoreg(M[,2], M[,1]))
-}
+isoreg_down <- isoreg_up
+formals(isoreg_down)$decreasing <- TRUE
 
 #' @export
 predict.stepfun <- function(model, newdata, se.fit, level, interval) model(newdata[[1]])
