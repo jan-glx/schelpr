@@ -19,14 +19,13 @@ Imports:
   gamlss.tr,
   ggbeeswarm,
   ggpointdensity (>= 0.1.0),
+  isoregr,
   ShortRead
-Suggests:
-  Best1990
 Remotes:
   Russel88/COEF,
   hadley/emo,
   LKremer/ggpointdensity,
-  jan-glx/isoreg_best
+  jan-glx/isoregr
 BiocViews: 
 License: MIT
 Encoding: UTF-8
