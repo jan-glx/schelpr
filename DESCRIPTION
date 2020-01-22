@@ -19,7 +19,9 @@ Imports:
   gamlss.tr,
   ggbeeswarm,
   ggpointdensity (>= 0.1.0),
+  ggsci,
   isoregr,
+  Seurat,
   ShortRead
 Remotes:
   Russel88/COEF,
