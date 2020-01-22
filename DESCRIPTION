@@ -1,13 +1,13 @@
-Package: cropSeqULIhelpeR
-Title: Helper package for analysis of CROP-seq-ULI data
-Version: 0.0.0.9000
+Package: schelpr
+Title: scHelpR ("shellper")
+Version: 0.0.0.9001
 Authors@R: 
     person(given = "Jan",
            family = "gleixner",
            role = c("aut", "cre"),
            email = "jan.gleinxer@gmail.com",
            comment = c(ORCID = "0000-0001-5006-7375"))
-Description: What the package does (one paragraph).
+Description: random collection of helper functions that have yet to make it into appropriate packages
 Depends:
   Seurat
 Imports:
