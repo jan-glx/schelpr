@@ -1,10 +1,21 @@
 #' Helper package for analysis of CROP-seq-ULI data
-#' @section make R markdown files
+#' @name schelpr
 #' @section plotting
 #' @section Seurat
-#' @name cropSeqULIhelpeR
+#' @section other
 #' @docType package
-#' @import rlang
-#' @importFrom magrittr `%>%` `%<>%`
+#' @rawNamespace import(rlang, except = `:=`)
+#' @import data.table
 NULL
 
+#' @importFrom magrittr `%T>%`
+#' @export
+magrittr::`%T>%`
+
+#' @importFrom magrittr `%>%`
+#' @export
+magrittr::`%>%`
+
+#' @importFrom magrittr `%<>%`
+#' @export
+magrittr::`%<>%`

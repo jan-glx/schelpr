@@ -1,4 +1,10 @@
 
+#' extract and join meta information and reductions (PCA, TSNE etc) into a single, randomly ordered data.table
+#' @export
+meta_and_reductions <- function(si) cbind(data.table(si@meta.data, keep.rownames = "cell"), do.call(cbind, setNames(lapply(si@reductions, function(reduction) reduction@cell.embeddings[, 1:2] %>% data.table), NULL))) %>% shuffle()
+
+
+
 FindLowNoiseFeatures <- function (object, ...) UseMethod(generic = "FindVariableFeatures", object = object)
 
 FindLowNoiseFeatures.Seurat <- function (object, assay = NULL, selection.method = "vst", loess.span = 0.3,
@@ -110,4 +116,24 @@ WeightData <- function(object, assay = NULL){
 
   Seurat::SetAssayData(object, slot="scale.data", new.data=X, assay = assay)
 
+}
+
+
+#' @export
+mean_scores <- function(data, features) {
+  lapply(features, function(features) {
+    colMeans(data[features %>% .[. %in% rownames(data)], ])
+  }) %>% as.data.frame()
+}
+
+#' @export
+pca_scores <- function(data, features) {
+  lapply(features, function(features) {
+
+    dat <- t(data[features %>% .[. %in% rownames(data)], ])
+    res <- tryCatch(irlba::irlba(dat, nv=1),
+                    warning = function(w) svd(dat, nu=1, nv=1),
+                    error=function(e) svd(dat, nu=1, nv=1))
+    with(res, u*sign(mean(v)))
+  }) %>% as.data.frame(row.names=colnames(data))
 }

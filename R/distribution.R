@@ -32,7 +32,6 @@ rNBIIzt <- NULL
 NBIIzt <-  NULL
 
 #' @export
-#' @import rlang
 truncate_dist <- function(distr) {
   prefixes <- c("p", "d", "q", "r")
   pdqr_names <- paste0(prefixes, distr)
@@ -42,7 +41,7 @@ truncate_dist <- function(distr) {
   with(pdqr, {
     function_env <- new_environment(data = mget(pdqr_names, envir = e, inherits = TRUE), parent = e)
     dtr <- rlang::new_function(
-      args = c(eval_bare(expr(formals(!!d)), env = e), exprs(lower = -Inf, upper = Inf)), 
+      args = c(eval_bare(expr(formals(!!d)), env = e), exprs(lower = -Inf, upper = Inf)),
       body = expr({
         d_args <- formals(sys.function(sys.parent(n = 0)))
         d_args_supplied <- as.list(match.call()[-1])
@@ -50,14 +49,14 @@ truncate_dist <- function(distr) {
         d_args$lower <- NULL
         d_args$upper <- NULL
         d <- do.call(!!d, d_args)
-        
+
         p_args <- formals(!!p)
         p_args_supplied <- as.list(match.call()[-1])
         p_args_supplied <- p_args_supplied[names(p_args_supplied) %in% names(p_args)]
         p_args[names(p_args_supplied)] <- p_args_supplied
-        p_args$q <- NULL    
+        p_args$q <- NULL
         p_args$log.p <- FALSE
-        
+
         p_lower <- do.call(!!p, c(list(q = lower), p_args))
         p_upper <- do.call(!!p, c(list(q = upper), p_args))
         p_within <- pmax(p_upper - p_lower, 0)
@@ -65,21 +64,21 @@ truncate_dist <- function(distr) {
         d <- d * (x>lower) * (x<=upper)
         #if(any(is.nan(d))) browser()
         d
-      }), 
+      }),
       env = function_env
     )
-    
+
     ptr <- rlang::new_function(
-      args = c(eval_bare(expr(formals(!!p)), env = e), exprs(lower = -Inf, upper = Inf)), 
+      args = c(eval_bare(expr(formals(!!p)), env = e), exprs(lower = -Inf, upper = Inf)),
       body = expr({
         p_args <- formals(sys.function(sys.parent(n = 0)))
         p_args_supplied <- as.list(match.call()[-1])
         p_args[names(p_args_supplied)] <- p_args_supplied
         p_args$lower <- NULL
         p_args$upper <- NULL
-        p_args$q <- NULL    
+        p_args$q <- NULL
         p <- do.call(!!p, c(list(q = q), p_args))
-        
+
         p_args$log.p <- FALSE
         p_lower <- do.call(!!p, c(list(q = lower), p_args))
         p_upper <- do.call(!!p, c(list(q = upper), p_args))
@@ -90,14 +89,14 @@ truncate_dist <- function(distr) {
         p[upper<lower] <- NaN[length(p)>0]
         #if(any(is.nan(p))) browser()
         p
-      }), 
+      }),
       env = function_env
     )
     assign(paste0("d", "t", distr), dtr, envir = e)
     assign(paste0("p", "t", distr), ptr, envir = e)
     invisible(list(dtr = dtr, ptr = ptr))
   })
-} 
+}
 
 # ------------------
 
@@ -106,13 +105,13 @@ deming.fit <- function(x, y, noise_ratio = sd(y)/sd(x)) {
   if(missing(noise_ratio) || is.null(noise_ratio)) noise_ratio <- eval(formals(sys.function(0))$noise_ratio) # this is just a complicated way to write `sd(y)/sd(x)`
   delta <-  noise_ratio^2
   x_name <- deparse(substitute(x))
-  
+
   s_yy <- var(y)
   s_xx <- var(x)
   s_xy <- cov(x, y)
   beta1 <- (s_yy - delta*s_xx + sqrt((s_yy - delta*s_xx)^2 + 4*delta*s_xy^2)) / (2*s_xy)
-  beta0 <- mean(y) - beta1 * mean(x) 
-  
+  beta0 <- mean(y) - beta1 * mean(x)
+
   res <- c(beta0 = beta0, beta1 = beta1)
   names(res) <- c("(Intercept)", x_name)
   class(res) <- "Deming"
@@ -121,7 +120,7 @@ deming.fit <- function(x, y, noise_ratio = sd(y)/sd(x)) {
 
 #' Deming regression for ggplot stat_smooth and geom_smooth
 #' With bootstrapped confidence intervals
-#' 
+#'
 #' @param formula formula for the tls
 #' @param data Input data.frame
 #' @param noise_ratio numeric scalar of the measurement error of LHS over that of RHS if missing or NULL
@@ -129,7 +128,7 @@ deming.fit <- function(x, y, noise_ratio = sd(y)/sd(x)) {
 #' @export
 deming <- function(formula, data, R = 100, noise_ratio = NULL, ...){
   ret <- boot::boot(
-    data = model.frame(formula, data), 
+    data = model.frame(formula, data),
     statistic = function(data, ind) {
       data <- data[ind, ]
       args <- rlang::parse_exprs(colnames(data))
@@ -139,11 +138,11 @@ deming <- function(formula, data, R = 100, noise_ratio = NULL, ...){
     R=R
   )
   class(ret) <- c("Deming", class(ret))
-  ret  
+  ret
 }
 
 #' prediction function for ggplot2's stat_smooth
-#' 
+#'
 #' @param model Input model
 #' @param xseq x-values used for prediction
 #' @param se Predict error or not
