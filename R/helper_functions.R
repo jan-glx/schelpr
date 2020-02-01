@@ -93,3 +93,18 @@ Mode <- function(x) {
 # expanded <- rep(center, nzero)
 # x@x <- (x@x - expanded)^2
 # (Matrix::colSums(x) + (nrow(x)-nzero) * center^2)/(nrow(x)-1)
+
+
+
+#' shuffel, i. e. randomly reorder observations
+#'
+#' @export
+shuffle <- function(object) UseMethod("shuffle", object)
+
+#' @method shuffle data.frame
+#' @export
+shuffle.data.frame <- function(df) df[sample(nrow(df)),]
+
+#' @method shuffle vector
+#' @export
+shuffle.vector <- function(x) x[sample(length(x))]
