@@ -123,7 +123,8 @@ WeightData <- function(object, assay = NULL){
 mean_scores <- function(data, features) {
   lapply(features, function(features) {
     colMeans(data[features %>% .[. %in% rownames(data)], ])
-  }) %>% as.data.frame()
+  }) %>% as.data.frame(row.names = colnames(data)) %>%
+    setNames(names(features))
 }
 
 #' @export
@@ -135,5 +136,6 @@ pca_scores <- function(data, features) {
                     warning = function(w) svd(dat, nu=1, nv=1),
                     error=function(e) svd(dat, nu=1, nv=1))
     with(res, u*sign(mean(v)))
-  }) %>% as.data.frame(row.names=colnames(data))
+  }) %>% as.data.frame(row.names = colnames(data)) %>%
+    setNames(names(features))
 }
