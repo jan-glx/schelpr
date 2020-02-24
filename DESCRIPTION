@@ -1,13 +1,13 @@
 Package: schelpr
 Title: scHelpR
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: 
     person(given = "Jan",
            family = "gleixner",
            role = c("aut", "cre"),
            email = "jan.gleinxer@gmail.com",
            comment = c(ORCID = "0000-0001-5006-7375"))
-Description:  pronounced "shellper". Contains a random collection of helper functions that have yet to make it into appropriate packages
+Description:  pronounced "shellp R". Contains a random collection of helper functions that have yet to make it into appropriate packages
 Depends:
   Seurat
 Imports:
