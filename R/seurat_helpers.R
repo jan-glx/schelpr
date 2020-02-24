@@ -129,6 +129,10 @@ mean_scores <- function(data, features) {
 
 #' @export
 pca_scores <- function(data, features) {
+  gene_vars <- schelpr::.my_rowVars(data)
+  usefull_genes <-  names(gene_vars)[gene_vars>0]
+  features <- lapply(features, function(x) x[x %in% usefull_genes])
+
   lapply(features, function(features) {
 
     dat <- t(data[features %>% .[. %in% rownames(data)], ])
