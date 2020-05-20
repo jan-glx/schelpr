@@ -136,10 +136,12 @@ pca_scores <- function(data, features) {
   lapply(features, function(features) {
 
     dat <- t(data[features %>% .[. %in% rownames(data)], ])
-    res <- tryCatch(irlba::irlba(dat, nv=1),
+    tryCatch({
+      res <- tryCatch(irlba::irlba(dat, nv=1),
                     warning = function(w) svd(dat, nu=1, nv=1),
                     error=function(e) svd(dat, nu=1, nv=1))
-    with(res, u*sign(mean(v)))
+      with(res, u*sign(mean(v)))
+    }, error = function(e) rep(NA_real_, ncol(data)))
   }) %>% as.data.frame(row.names = colnames(data)) %>%
     setNames(names(features))
 }
