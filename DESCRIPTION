@@ -23,6 +23,7 @@ Imports:
   ggforce,
   ggpointdensity (>= 0.1.0),
   ggsci,
+  irlba,
   isoregr,
   Matrix.utils,
   rstan,
