@@ -20,6 +20,7 @@ Imports:
   gamlss,
   gamlss.tr,
   ggbeeswarm,
+  ggforce,
   ggpointdensity (>= 0.1.0),
   ggsci,
   isoregr,
