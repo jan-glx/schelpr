@@ -1,7 +1,11 @@
 
 #' extract and join meta information and reductions (PCA, TSNE etc) into a single, randomly ordered data.table
 #' @export
-meta_and_reductions <- function(si) cbind(data.table(si@meta.data, keep.rownames = "cell"), do.call(cbind, setNames(lapply(si@reductions, function(reduction) reduction@cell.embeddings[, 1:2] %>% data.table), NULL))) %>% shuffle()
+meta_and_reductions <- function(si) {
+  dt <- if("cell" %in% colnames(si@meta.data)) data.table(si@meta.data) else data.table(si@meta.data, keep.rownames = "cell")
+  dt <- cbind(dt, do.call(cbind, setNames(lapply(si@reductions, function(reduction) reduction@cell.embeddings[, 1:2] %>% data.table), NULL)))
+  shuffle(dt)
+}
 
 
 
