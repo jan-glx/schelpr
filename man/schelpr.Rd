@@ -4,9 +4,6 @@
 \name{schelpr}
 \alias{schelpr}
 \title{Helper package for analysis of CROP-seq-ULI data}
-\description{
-Helper package for analysis of CROP-seq-ULI data
-}
 \section{plotting}{
 NA
 }
