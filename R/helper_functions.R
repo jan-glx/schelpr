@@ -108,3 +108,33 @@ shuffle.data.frame <- function(df) df[sample(nrow(df)),]
 #' @method shuffle vector
 #' @export
 shuffle.vector <- function(x) x[sample(length(x))]
+
+#' Create data.table from sparse matrix
+#' @export
+#' @examples
+#' sparse2long(Matrix::spMatrix(1:3,2:4,3:5, ncol=4, nrow=3))
+sparse2long <- function(mat, value_name = "value") {
+  mat <- as(mat, "dgTMatrix")
+  dt <- data.table(row = mat@i + 1, col = mat@j + 1, value = mat@x)
+  if (!is.null(mat@Dimnames[[1]])) dt[, row := mat@Dimnames[[1]][row]]
+  if (!is.null(names(mat@Dimnames)[1])) setnames(dt, "row", names(mat@Dimnames)[1])
+  if (!is.null(mat@Dimnames[[2]])) dt[, col := mat@Dimnames[[2]][col]]
+  if (!is.null(names(mat@Dimnames)[2])) setnames(dt, "col", names(mat@Dimnames)[2])
+  setnames(dt, "value", value_name)
+  dt[]
+}
+
+
+#' Create sparse matrix from long data.table
+#' @export
+#' @examples
+#' long2sparse(1:3, 2:4, runif(3))
+long2sparse <- function(rows, cols, values, dimname_rows = base::deparse1(substitute(rows)), dimname_cols = base::deparse1(substitute(rows))) {
+  force(dimname_rows)
+  force(dimname_cols)
+  rows <- factor(rows)
+  cols <- factor(cols)
+  dimnames <- list(levels(rows), levels(cols))
+  names(dimnames) <- c(dimname_rows, dimname_cols)
+  Matrix::sparseMatrix(i = as.integer(rows), j = as.integer(cols), x = values, dimnames = dimnames)
+}
