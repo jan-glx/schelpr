@@ -1,10 +1,16 @@
 library(data.table)
 
+#' Combine sets of FDR controlled tests and adjust for this second level of multiple testing
+#' the returned adjusted q values control the average FDR for the sets with rejections (sets with no rejections always control FDR)
+#' @rdname adjust_q_vals
 #' @export
 #' @import data.table
-adjust_q_vals <- function(q_vals, ...) 
+adjust_q_vals <- function(q_vals, ...)
   UseMethod("adjust_q_vals")
 
+#'
+#' @rdname adjust_q_vals
+#' @export
 adjust_q_vals.default <- function(q_vals, sets) {
   dt <- data.table(q_val = q_vals, set = sets)
   selections_dt <- dt[, .(min_q_val = min(q_val)), by = .(set)][order(min_q_val)][, n_sets := .I][]
@@ -16,6 +22,8 @@ adjust_q_vals.default <- function(q_vals, sets) {
 
 
 
+#' @rdname adjust_q_vals
+#' @export
 adjust_q_vals.list <- function(q_vals, ...) {
   dt <- data.table(q_val = unlist(q_vals), set = rep(names(q_vals), sapply(q_vals, length)))
   dt[, q_val_adj := adjust_q_vals(q_vals = q_val, sets = set, ...)]
