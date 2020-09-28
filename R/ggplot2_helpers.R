@@ -30,7 +30,7 @@ median_cl <- function(y, conf.level=0.95, na.rm=TRUE) quantile_cl(y, q=0.5, conf
 
 #' @export
 quantile_ci <- function(y, q=0.5, alpha=0.95, na.rm=FALSE) {
-  lifecycle::deprecate_soft(when = "0.0.0.9006", what = "quantile_ci", with = "quantile_cl")
+  lifecycle::deprecate_soft(when = "0.0.0.9006", what = "quantile_ci()", with = "quantile_cl()")
   quantile_cl(y = y, q = q, conf.level = alpha, na.rm = na.rm)
 }
 
