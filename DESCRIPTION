@@ -1,6 +1,6 @@
 Package: schelpr
 Title: scHelpR
-Version: 0.0.0.9005
+Version: 0.0.0.9006
 Authors@R: 
     person(given = "Jan",
            family = "gleixner",
@@ -25,6 +25,7 @@ Imports:
   ggsci,
   irlba,
   isoregr,
+  lifecycle,
   Matrix.utils,
   rstan,
   Seurat,
