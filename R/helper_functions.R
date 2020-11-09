@@ -49,6 +49,36 @@ setMethod(".my_rowVars", "dgCMatrix", function(x, center=NULL) {
   (Matrix::rowSums(x) + (ncol(x)-nzero) * center^2)/(ncol(x)-1)
 })
 
+#' aggregate_var.Matrix
+#' for each column estimate per group (of rows) variance
+#' @seealso Matrix.utils::aggregate.Matrix
+#' @param x a Matrix or object coercible to one
+#' @param group a factor or a object coercible to one specifying the grouping of rows of \code{x}
+#' @export
+aggregate_var.Matrix <- function(x, group) {
+  x <- as(x, "dgCMatrix")
+  group <- as.factor(group)
+
+  assertthat::are_equal(nrow(x), length(group))
+
+  n_obs_of_group <- tabulate(group)
+
+  x_mean <- Matrix.utils::aggregate.Matrix(x, group, fun = "sum") / n_obs_of_group # n_groups x n_cols
+  n_not_zero <- Matrix.utils::aggregate.Matrix(x, group, fun = "count")            # n_groups x n_cols
+
+  # centering non-zero elements:
+  x@x <- x@x - x_mean[cbind(
+    as.integer(group)[x@i+1],        # row (group)
+    rep(seq_len(ncol(x)), diff(x@p)) # column
+  )]
+
+  x_var <- (
+    Matrix.utils::aggregate.Matrix(x^2, group, fun = "sum") + # contribution of non-zero elements
+    n_obs_of_group * x_mean^2 - n_not_zero * x_mean^2         # contribution of zero-valued elements (factoring out x_mean^2 might be slower in case of truely sparse results)
+  ) / (n_obs_of_group-1)                                      # unbiased variance estimation
+  x_var # returned
+}
+
 #' @export
 Mode <- function(x) {
   ux <- unique(x)
