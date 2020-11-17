@@ -54,6 +54,7 @@ setMethod(".my_rowVars", "dgCMatrix", function(x, center=NULL) {
 #' @seealso Matrix.utils::aggregate.Matrix
 #' @param x a Matrix or object coercible to one
 #' @param group a factor or a object coercible to one specifying the grouping of rows of \code{x}
+#' @import Matrix
 #' @export
 aggregate_var.Matrix <- function(x, group) {
   x <- as(x, "dgCMatrix")
