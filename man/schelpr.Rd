@@ -4,6 +4,9 @@
 \name{schelpr}
 \alias{schelpr}
 \title{Helper package for analysis of CROP-seq-ULI data}
+\description{
+pronounced "shellp R". Contains a random collection of helper functions that have yet to make it into appropriate packages
+}
 \section{plotting}{
 NA
 }
