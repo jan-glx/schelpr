@@ -159,7 +159,7 @@ sparse2long <- function(mat, value_name = "value") {
 #' @export
 #' @examples
 #' long2sparse(1:3, 2:4, runif(3))
-long2sparse <- function(rows, cols, values, dimname_rows = base::deparse1(substitute(rows)), dimname_cols = base::deparse1(substitute(rows))) {
+long2sparse <- function(rows, cols, values, dimname_rows = base::deparse1(substitute(rows)), dimname_cols = base::deparse1(substitute(cols))) {
   force(dimname_rows)
   force(dimname_cols)
   rows <- factor(rows)

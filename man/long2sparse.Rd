@@ -9,7 +9,7 @@ long2sparse(
   cols,
   values,
   dimname_rows = base::deparse1(substitute(rows)),
-  dimname_cols = base::deparse1(substitute(rows))
+  dimname_cols = base::deparse1(substitute(cols))
 )
 }
 \description{
