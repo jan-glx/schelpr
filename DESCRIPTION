@@ -11,8 +11,10 @@ Description: pronounced "shellp R". Contains a random collection of helper funct
 Depends:
   Seurat
 Imports:
+    assertthat,
     binom,
     broom,
+    boot,
     COEF,
     data.table,
     emo,
@@ -27,14 +29,19 @@ Imports:
     ggsci,
     irlba,
     isoregr,
+    knitr,
     lifecycle,
     magrittr,
     Matrix,
     Matrix.utils,
+    methods,
     rlang,
+    scales,
     Seurat,
     ShortRead,
-    tidyverse
+    stats,
+    tidyverse,
+    utils
 Remotes:
   Russel88/COEF,
   hadley/emo,
