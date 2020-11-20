@@ -28,7 +28,6 @@ Imports:
   ggpointdensity (>= 0.1.0),
   ggsci,
   irlba,
-  isoregr,
   knitr,
   lifecycle,
   magrittr,
@@ -44,8 +43,7 @@ Imports:
 Remotes:
   Russel88/COEF,
   hadley/emo,
-  LKremer/ggpointdensity,
-  jan-glx/isoregr
+  LKremer/ggpointdensity
 BiocViews: 
 License: MIT + file LICENSE
 Encoding: UTF-8
