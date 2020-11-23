@@ -1,6 +1,6 @@
 Package: schelpr
 Title: scHelpR
-Version: 0.0.0.9007
+Version: 0.0.0.9008
 Authors@R: 
   person(given = "Jan",
          family = "gleixner",
@@ -19,6 +19,7 @@ Imports:
   data.table,
   emo,
   fitdistrplus,
+  fs,
   gamlss,
   gamlss.dist,
   gamlss.tr,
@@ -40,7 +41,8 @@ Imports:
   ShortRead,
   stats,
   tidyverse,
-  utils
+  utils,
+  vcfR
 Remotes:
   Russel88/COEF,
   hadley/emo,
