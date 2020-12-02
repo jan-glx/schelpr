@@ -36,10 +36,12 @@
           do.call(!!f_gen_sym, args, envir = parent.frame())
         })
         new_f})
-      utils::assignInMyNamespace(f_new_name, new_f)
+      utils::assignInMyNamespace(f_new_name, new_f) # needed for bad design of
+      #assign(f_new_name, new_f, envir = parent.env(environment()))
       #assign(f_new_name, new_f, envir= global_env())
       #if(exists(f_gen_name, envir=sys.frame(0), mode="function", inherits=FALSE))
       #  rm(list = f_gen_name, envir = sys.frame(0))
     }
   }
+  registerS3method("predictdf", "Deming", schelpr:::predictdf.Deming, envir = environment(ggplot2:::predictdf))# needed since Hadley won't export predictcdf
 }
