@@ -8,8 +8,6 @@ Authors@R:
          email = "jan.gleinxer@gmail.com",
          comment = c(ORCID = "0000-0001-5006-7375"))
 Description: pronounced "shellp R". Contains a random collection of helper functions that have yet to make it into appropriate packages
-Depends:
-  Seurat
 Imports:
   assertthat,
   boot,
@@ -32,6 +30,7 @@ Imports:
   Matrix.utils,
   methods,
   rlang,
+  Seurat,
   scales,
   stats,
   tidyverse,
