@@ -12,10 +12,7 @@ Depends:
   Seurat
 Imports:
   assertthat,
-  binom,
-  broom,
   boot,
-  COEF,
   data.table,
   emo,
   fitdistrplus,
@@ -26,7 +23,6 @@ Imports:
   ggbeeswarm,
   ggforce,
   ggplot2,
-  ggpointdensity (>= 0.1.0),
   ggsci,
   irlba,
   knitr,
@@ -37,15 +33,12 @@ Imports:
   methods,
   rlang,
   scales,
-  ShortRead,
   stats,
   tidyverse,
   utils,
   vcfR
 Remotes:
-  Russel88/COEF,
-  hadley/emo,
-  LKremer/ggpointdensity
+  hadley/emo
 BiocViews: 
 License: MIT + file LICENSE
 Encoding: UTF-8
