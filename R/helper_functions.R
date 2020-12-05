@@ -134,11 +134,11 @@ shuffle <- function(object) UseMethod("shuffle", object)
 
 #' @method shuffle data.frame
 #' @export
-shuffle.data.frame <- function(df) df[sample(nrow(df)),]
+shuffle.data.frame <- function(object) object[sample(nrow(object)),]
 
 #' @method shuffle vector
 #' @export
-shuffle.vector <- function(x) x[sample(length(x))]
+shuffle.vector <- function(object) object[sample(length(object))]
 
 #' Create data.table from sparse matrix
 #' @export
