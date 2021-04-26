@@ -149,3 +149,47 @@ pca_scores <- function(data, features) {
   }) %>% as.data.frame(row.names = colnames(data)) %>%
     setNames(names(features))
 }
+
+#' @export
+aggregate_log_normalized_expression <- function(x, group, group_name = deparse1(substitute(group))) {
+  group <- as.factor(group)
+  total_counts_of_cell <- Matrix::colSums(x)
+  x <- Matrix::t(x)
+  mean_counts_of_gene <- Matrix::colMeans(x)
+
+  #subset to detected genes
+  x <- x[, mean_counts_of_gene>0]
+
+  total_counts_of_group_x_gene <- as.matrix(Matrix.utils::aggregate.Matrix(x, group))
+  n_cells_of_group <- tabulate(group)
+  total_counts_of_group <- Matrix::rowSums(total_counts_of_group_x_gene)
+
+  # log1p normalize
+  scaling_factor <-  mean(total_counts_of_cell)
+  size_factor <- scaling_factor / total_counts_of_cell
+  x <- log1p(x * size_factor)
+
+
+  x_mean <- as.matrix(Matrix.utils::aggregate.Matrix(x, group) / n_cells_of_group)
+  x_var <- as.matrix(aggregate_var.Matrix(x, group))
+  n_genes <- ncol(x_mean)
+
+  agg_dt <- data.table(
+    group = rep(rownames(x_mean), n_genes),
+    gene = rep(colnames(x_mean), each = nrow(x_mean)),
+    expression_mean = as.vector(x_mean),
+    expression_variance = as.vector(x_var),
+    count_sum = as.vector(total_counts_of_group_x_gene),
+    total_count_sum = rep(total_counts_of_group, n_genes),
+    n_cells_of_group = rep(n_cells_of_group, n_genes),
+    scaling_factor = scaling_factor
+  )
+
+  agg_dt[, c("expression_log1p_lower", "expression_log1p_upper", "expression_log1p_mean") :=
+           data.table(binom::binom.exact(count_sum, total_count_sum, conf.level = diff(pnorm(c(-0.5, 0.5)))))[
+             , data.table(log1p(cbind(lower, upper, mean) * scaling_factor))], by=.(group, total_count_sum)]
+  agg_dt[, expression_counting_variance := (expression_log1p_upper - expression_log1p_lower)^2 * n_cells_of_group , by=.(group, total_count_sum)]
+  setnames(agg_dt, "group", group_name)
+  setnames(agg_dt, "n_cells_of_group", paste0("n_cells_of_", group_name))
+  agg_dt[]
+}
