@@ -59,7 +59,16 @@ fastq_emoji_map_binned= c(
   'I'= 'heart_eyes',
   'J'= 'heart_eyes'
 )
-fastq_emoji_map_binned <- sapply(fastq_emoji_map_binned, emo::ji)
+
+fastq_emoji_map_binned <- delayedAssign("fastq_emoji_map_binned", {
+  if(requireNamespace("emo")) {
+    sapply(fastq_emoji_map_binned, emo::ji)
+  } else {
+    warning("Package `emo` not installed. Install it using`::install_github("hadley/emo")`. Falling pack to ascii.")
+    fastq_ascii_map_binned <- rev(c("▉", "▊", "█", "▋", "▍", "▌", "▎ ", "▏ ", " "))[cumsum(c(1, diff(fastq_emoji_map_binned)!=0)))]
+    names(fastq_ascii_map_binned) <- names(fastq_emoji_map_binned)
+    fastq_ascii_map_binned
+  }}
 
 #' @export
 fastq2emoji <- function(x) do.call(paste0,lapply(tstrsplit(x, split=""), function(x) fastq_emoji_map_binned[x]))

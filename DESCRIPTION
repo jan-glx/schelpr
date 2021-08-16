@@ -1,6 +1,6 @@
 Package: schelpr
 Title: scHelpR
-Version: 0.0.0.9008
+Version: 0.0.0.9009
 Authors@R: 
   person(given = "Jan",
          family = "gleixner",
@@ -12,7 +12,6 @@ Imports:
   assertthat,
   boot,
   data.table,
-  emo,
   fitdistrplus,
   fs,
   gamlss,
@@ -38,6 +37,8 @@ Imports:
   vcfR
 Remotes:
   hadley/emo
+Suggest:
+  emo
 BiocViews: 
 License: MIT + file LICENSE
 Encoding: UTF-8
