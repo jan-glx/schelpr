@@ -64,7 +64,7 @@ fastq_emoji_map_binned <- delayedAssign("fastq_emoji_map_binned", {
   if(requireNamespace("emo")) {
     sapply(fastq_emoji_map_binned, emo::ji)
   } else {
-    warning("Package `emo` not installed. Install it using`::install_github("hadley/emo")`. Falling pack to ascii.")
+    warning("Package `emo` not installed. Install it using`::install_github(\"hadley/emo\")`. Falling pack to ascii.")
     fastq_ascii_map_binned <- rev(c("▉", "▊", "█", "▋", "▍", "▌", "▎ ", "▏ ", " "))[cumsum(c(1, diff(fastq_emoji_map_binned)!=0)))]
     names(fastq_ascii_map_binned) <- names(fastq_emoji_map_binned)
     fastq_ascii_map_binned
