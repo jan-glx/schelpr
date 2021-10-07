@@ -176,3 +176,8 @@ formals(isoreg_down)$decreasing <- TRUE
 
 #' @export
 predict.stepfun <- function(model, newdata, se.fit, level, interval) model(newdata[[1]])
+
+
+
+#' @export
+geom_cell <- function(..., size = 0.2, raster.dpi = 600) ggrastr::rasterize(ggplot2::geom_point(..., size = size), dpi = raster.dpi)
