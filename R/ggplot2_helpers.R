@@ -181,3 +181,10 @@ predict.stepfun <- function(model, newdata, se.fit, level, interval) model(newda
 
 #' @export
 geom_cell <- function(..., size = 0.2, raster.dpi = 600) ggrastr::rasterize(ggplot2::geom_point(..., size = size), dpi = raster.dpi)
+
+#' @export
+print_by <- function(x, by, plot) {
+  x <- as.data.table(x)
+  split(x, by=by) %>% lapply(function(dt) print(plot(dt)))
+  invisible(x)
+}

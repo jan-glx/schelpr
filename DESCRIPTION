@@ -1,6 +1,6 @@
 Package: schelpr
 Title: scHelpR - single cell helper package
-Version: 0.0.9011
+Version: 0.0.9012
 Authors@R: 
   person(given = "Jan",
          family = "gleixner",
