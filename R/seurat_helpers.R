@@ -38,11 +38,15 @@ pca_scores <- function(data, features) {
 
   lapply(features, function(features) {
     dat <- t(data[features, ])
+    nn <- pmax(1, pmin(5, ncol(dat)-2)) # number of PCs to look at
+    mean_scores <- Matrix::rowMeans(dat)
     tryCatch({
-      res <- tryCatch(irlba::irlba(dat, scale = sqrt(gene_vars[features]), center = Matrix::colMeans(dat), nv=1),
-                      warning = function(w) {svd(scale(dat), nu=1, nv=1)},
-                      error = function(e) {svd(scale(dat), nu=1, nv=1)})
+      res <- tryCatch(irlba::irlba(dat, scale = sqrt(gene_vars[features]), center = Matrix::colMeans(dat), nv=nn),
+                      warning = function(w) {svd(scale(dat), nu=nn, nv=nn)},
+                      error = function(e) {svd(scale(dat), nu=nn, nv=nn)})
       scores <- with(res, t(t(u)*sign(colMeans(v))))
+      cors <- cor(scores, mean_scores)
+      if(which.max(cors)!=1) message("The first principal component has not the highest correlation with the average of features (", paste0(features, collapse = ", "), ") average (correlations:", sprintf(" %.3f", cors), ")")
       scores[, 1]
     }, error = function(e) {warning("pca_score_computation failed with \"", e, "\", returning NAs.") ;rep(NA_real_, ncol(data))})
   }) %>% as.data.frame(row.names = colnames(data)) %>%
