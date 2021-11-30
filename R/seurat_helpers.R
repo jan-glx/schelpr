@@ -33,17 +33,18 @@ mean_scores <- function(data, features) {
 pca_scores <- function(data, features) {
   gene_vars <- schelpr::.my_rowVars(data)
   usefull_genes <-  names(gene_vars)[gene_vars>0]
-  features <- lapply(features, function(x) x[x %in% usefull_genes])
+  features <- lapply(features, intersect, usefull_genes)
+  features <- lapply(features, intersect, rownames(data))
 
   lapply(features, function(features) {
-
-    dat <- t(data[features %>% .[. %in% rownames(data)], ])
+    dat <- t(data[features, ])
     tryCatch({
-      res <- tryCatch(irlba::irlba(dat, nv=1),
-                    warning = function(w) svd(dat, nu=1, nv=1),
-                    error=function(e) svd(dat, nu=1, nv=1))
-      with(res, u*sign(mean(v)))
-    }, error = function(e) rep(NA_real_, ncol(data)))
+      res <- tryCatch(irlba::irlba(dat, scale = sqrt(gene_vars[features]), center = Matrix::colMeans(dat), nv=1),
+                      warning = function(w) {svd(scale(dat), nu=1, nv=1)},
+                      error = function(e) {svd(scale(dat), nu=1, nv=1)})
+      scores <- with(res, t(t(u)*sign(colMeans(v))))
+      scores[, 1]
+    }, error = function(e) {warning("pca_score_computation failed with \"", e, "\", returning NAs.") ;rep(NA_real_, ncol(data))})
   }) %>% as.data.frame(row.names = colnames(data)) %>%
     setNames(names(features))
 }
