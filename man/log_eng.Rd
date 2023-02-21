@@ -54,21 +54,30 @@ log1p_scaled_breaks(maj, radix = 10, scale = 1)
 
 format_major_breaks(breaks_to_label, format)
 
-log1p_scaled_trans(radix, scale, format = scales::format_format())
+log1p_scaled_trans(
+  radix,
+  scale,
+  show_minor_ticks = FALSE,
+  format = scales::format_format()
+)
 
-scale_x_log1p_scaled(..., radix = 10, scale = 1)
+scale_x_log1p_scaled(..., radix = 10, scale = 1, show_minor_ticks = FALSE)
 
-scale_y_log1p_scaled(..., radix = 10, scale = 1)
+scale_y_log1p_scaled(..., radix = 10, scale = 1, show_minor_ticks = FALSE)
 
-scale_color_log1p_scaled(..., radix = 10, scale = 1)
+scale_color_log1p_scaled(..., radix = 10, scale = 1, show_minor_ticks = FALSE)
 
 log1p_breaks(maj, radix = 10)
 
-log1p_trans(radix, format = scales::format_format())
+log1p_trans(
+  radix = 10,
+  show_minor_ticks = FALSE,
+  format = scales::format_format()
+)
 
-scale_x_log1p(..., radix = 10)
+scale_x_log1p(..., radix = 10, show_minor_ticks = FALSE)
 
-scale_y_log1p(..., radix = 10)
+scale_y_log1p(..., radix = 10, show_minor_ticks = FALSE)
 }
 \description{
 Nice log / log1p Scale

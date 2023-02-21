@@ -92,25 +92,26 @@ format_major_breaks <- function(breaks_to_label, format) function(x) ifelse(as.c
 
 #' @export
 #' @rdname log_eng
-log1p_scaled_trans <- function(radix, scale, format = scales::format_format()) scales::trans_new(
+log1p_scaled_trans <- function(radix, scale, show_minor_ticks = FALSE, format = scales::format_format()) scales::trans_new(
   "log1p_scaled",
   transform = function(x) log1p(x*scale)/log(radix),
   inverse = function(x) expm1(x*log(radix))/scale,
-  breaks = log1p_scaled_breaks(FALSE, radix, scale),
-  format = format_major_breaks(log1p_scaled_breaks(TRUE, radix, scale), format = format) #function(x) {this_major_breaks <- log1p_scaled_breaks(TRUE, radix, scale)(x[!is.na(x)]); ifelse(as.character(x) %in% as.character(this_major_breaks), format(x), "")})
+  breaks = log1p_scaled_breaks(!show_minor_ticks, radix, scale),
+  minor_breaks = log1p_scaled_breaks(FALSE, radix, scale),
+  format = if(show_minor_ticks) format_major_breaks(log1p_scaled_breaks(TRUE, radix, scale), format = format) else format #function(x) {this_major_breaks <- log1p_scaled_breaks(TRUE, radix, scale)(x[!is.na(x)]); ifelse(as.character(x) %in% as.character(this_major_breaks), format(x), "")})
 )
 
 #' @export
 #' @rdname log_eng
-scale_x_log1p_scaled <- function(..., radix=10, scale = 1) scale_x_continuous(..., trans=log1p_scaled_trans(radix, scale))
+scale_x_log1p_scaled <- function(..., radix=10, scale = 1, show_minor_ticks = FALSE) scale_x_continuous(..., trans=log1p_scaled_trans(radix, scale, show_minor_ticks))
 
 #' @export
 #' @rdname log_eng
-scale_y_log1p_scaled <- function(..., radix=10, scale = 1) scale_y_continuous(..., trans=log1p_scaled_trans(radix, scale))
+scale_y_log1p_scaled <- function(..., radix=10, scale = 1, show_minor_ticks = FALSE) scale_y_continuous(..., trans=log1p_scaled_trans(radix, scale, show_minor_ticks))
 
 #' @export
 #' @rdname log_eng
-scale_color_log1p_scaled <- function(..., radix=10, scale = 1) scale_color_continuous(..., trans=log1p_scaled_trans(radix, scale))
+scale_color_log1p_scaled <- function(..., radix=10, scale = 1, show_minor_ticks = FALSE) scale_color_continuous(..., trans=log1p_scaled_trans(radix, scale, show_minor_ticks))
 
 
 
@@ -121,19 +122,19 @@ log1p_breaks <- function(maj, radix=10) log1p_scaled_breaks(maj, radix)
 
 #' @export
 #' @rdname log_eng
-log1p_trans <- function(radix, format = scales::format_format()) {
-  trans <- log1p_scaled_trans(radix, scale = 1, format)
+log1p_trans <- function(radix = 10, show_minor_ticks = FALSE, format = scales::format_format()) {
+  trans <- log1p_scaled_trans(radix, scale = 1, show_minor_ticks = show_minor_ticks, format = format)
   trans$name <- "log1p"
   trans
 }
 
 #' @export
 #' @rdname log_eng
-scale_x_log1p <- function(..., radix=10) scale_x_continuous(..., trans=log1p_trans(radix))
+scale_x_log1p <- function(..., radix=10, show_minor_ticks = FALSE) scale_x_continuous(..., trans=log1p_trans(radix=radix, show_minor_ticks = show_minor_ticks))
 
 #' @export
 #' @rdname log_eng
-scale_y_log1p <- function(..., radix=10) scale_y_continuous(..., trans=log1p_trans(radix))
+scale_y_log1p <- function(..., radix=10, show_minor_ticks = FALSE) scale_y_continuous(..., trans=log1p_trans(radix=radix, show_minor_ticks = show_minor_ticks))
 
 #' @export
 make_quantile_trans <- function(x, format = scales::label_number()) {
