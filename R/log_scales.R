@@ -54,7 +54,7 @@ scale_y_log <- scale_y_log_eng
 log1p_scaled_breaks <- function(maj, radix=10, scale = 1) {
   function(x, limits, n) {
     x <- x * scale
-    breaks <- if ( max(x)>1){
+    breaks <- if ( max(x, na.rm = TRUE)>1){
       minx         = -1
       maxx         = floor(logb(max(x, na.rm=T), radix)) + 1
       n_major      = maxx - minx + 1
