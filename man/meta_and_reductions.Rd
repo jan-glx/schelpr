@@ -4,7 +4,7 @@
 \alias{meta_and_reductions}
 \title{extract and join meta information and reductions (PCA, TSNE etc) into a single, randomly ordered data.table}
 \usage{
-meta_and_reductions(si)
+meta_and_reductions(si, max_n_dim_embeddings = 2)
 }
 \description{
 extract and join meta information and reductions (PCA, TSNE etc) into a single, randomly ordered data.table
