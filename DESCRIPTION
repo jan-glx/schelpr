@@ -1,9 +1,9 @@
 Package: schelpr
 Title: scHelpR - single cell helper package
-Version: 0.0.9017
+Version: 0.0.9018
 Authors@R: 
   person(given = "Jan",
-         family = "gleixner",
+         family = "Gleixner",
          role = c("aut", "cre"),
          email = "jan.gleinxer@gmail.com",
          comment = c(ORCID = "0000-0001-5006-7375"))
