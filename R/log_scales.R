@@ -52,7 +52,7 @@ scale_y_log <- scale_y_log_eng
 #' @export
 #' @rdname log_eng
 log1p_scaled_breaks <- function(maj, radix=10, scale = 1) {
-  function(x) {
+  function(x, limits, n) {
     x <- x * scale
     breaks <- if ( max(x)>1){
       minx         = -1
