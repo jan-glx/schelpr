@@ -24,7 +24,8 @@ WeightData <- function(object, assay = NULL){
 #' @export
 mean_scores <- function(data, features) {
   lapply(features, function(features) {
-    colMeans(data[features %>% .[. %in% rownames(data)], ])
+    colMeans(data[features %>% .[. %in% rownames(data)], ]) %>%
+      apply(MARGIN = 2, scales::rescale)
   }) %>% as.data.frame(row.names = colnames(data)) %>%
     setNames(names(features))
 }
@@ -47,7 +48,7 @@ pca_scores <- function(data, features) {
       scores <- with(res, t(t(u)*sign(colMeans(v))))
       cors <- cor(scores, mean_scores)
       if(which.max(cors)!=1) message("The first principal component has not the highest correlation with the average of features (", paste0(features, collapse = ", "), ") average (correlations:", sprintf(" %.3f", cors), ")")
-      scores[, 1]
+      scales::rescale(scores[, 1])
     }, error = function(e) {warning("pca_score_computation failed with \"", e, "\", returning NAs.") ;rep(NA_real_, ncol(data))})
   }) %>% as.data.frame(row.names = colnames(data)) %>%
     setNames(names(features))
