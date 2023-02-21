@@ -17,5 +17,5 @@ aggregate_var.Matrix
 for each column estimate per group (of rows) variance
 }
 \seealso{
-Matrix.utils::aggregate.Matrix
+[\link{aggregate.Matrix}]
 }

@@ -2,6 +2,7 @@
 
 S3method(adjust_q_vals,default)
 S3method(adjust_q_vals,list)
+S3method(aggregate,Matrix)
 S3method(predict,stepfun)
 S3method(shuffle,data.frame)
 S3method(shuffle,vector)

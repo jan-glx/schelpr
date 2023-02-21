@@ -49,11 +49,31 @@ setMethod(".my_rowVars", "dgCMatrix", function(x, center=NULL) {
   (Matrix::rowSums(x) + (ncol(x)-nzero) * center^2)/(ncol(x)-1)
 })
 
+#' aggregate.Matrix
+#' for each column estimate per group (of rows) mean
+#' @md
+#' @param x a `n` x `p` Matrix or object coercible to one
+#' @param group a factor or a object coercible to one specifying the grouping of rows of `x` into `k` groups
+#' @return a `k` x `p` [[Matrix::dgCMatrix]] of values of `x` aggragated by `group`
+#' @import Matrix
+#' @export
+aggregate.Matrix <- function(x, group, fun ="sum") {
+  x <- as(x, "dgCMatrix")
+  group <- as.factor(group)
+  fun <- match.arg(fun)
+  assertthat::are_equal(nrow(x), length(group))
+
+  n_obs_of_group <- tabulate(group)
+  z <- Matrix::sparseMatrix(i = as.integer(group), j = seq_along(group), dimnames = list(levels(group), NULL))
+  z %*% x
+}
+
 #' aggregate_var.Matrix
 #' for each column estimate per group (of rows) variance
-#' @seealso Matrix.utils::aggregate.Matrix
+#' @md
+#' @seealso [[aggregate.Matrix]]
 #' @param x a Matrix or object coercible to one
-#' @param group a factor or a object coercible to one specifying the grouping of rows of \code{x}
+#' @param group a factor or a object coercible to one specifying the grouping of rows of `x`
 #' @import Matrix
 #' @export
 aggregate_var.Matrix <- function(x, group) {
@@ -64,8 +84,8 @@ aggregate_var.Matrix <- function(x, group) {
 
   n_obs_of_group <- tabulate(group)
 
-  x_mean <- Matrix.utils::aggregate.Matrix(x, group, fun = "sum") / n_obs_of_group # n_groups x n_cols
-  n_not_zero <- Matrix.utils::aggregate.Matrix(x, group, fun = "count")            # n_groups x n_cols
+  x_mean <- aggregate.Matrix(x, group, fun = "sum") / n_obs_of_group # n_groups x n_cols
+  n_not_zero <- aggregate.Matrix(x != 0, group, fun = "sum")         # n_groups x n_cols
 
   # centering non-zero elements:
   x@x <- x@x - x_mean[cbind(
@@ -74,8 +94,8 @@ aggregate_var.Matrix <- function(x, group) {
   )]
 
   x_var <- (
-    Matrix.utils::aggregate.Matrix(x^2, group, fun = "sum") + # contribution of non-zero elements
-    n_obs_of_group * x_mean^2 - n_not_zero * x_mean^2         # contribution of zero-valued elements (factoring out x_mean^2 might be slower in case of truely sparse results)
+    aggregate.Matrix(x^2, group, fun = "sum") + # contribution of non-zero elements
+    n_obs_of_group * x_mean^2 - n_not_zero * x_mean^2         # contribution of zero-valued elements (factoring out x_mean^2 might be slower in case of truly sparse results)
   ) / (n_obs_of_group-1)                                      # unbiased variance estimation
   x_var # returned
 }

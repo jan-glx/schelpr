@@ -7,7 +7,7 @@ Authors@R:
          role = c("aut", "cre"),
          email = "jan.gleinxer@gmail.com",
          comment = c(ORCID = "0000-0001-5006-7375"))
-Description: pronounced "shellp R". Contains a random collection of helper functions that have yet to make it into appropriate packages
+Description: pronounced "shellp R". Contains a random collection of helper functions that have yet to make it into appropriate packages.
 Imports:
   assertthat,
   boot,
@@ -27,7 +27,6 @@ Imports:
   magrittr,
   MASS,
   Matrix(>= 1.3.3),
-  Matrix.utils,
   methods,
   rlang,
   Seurat,

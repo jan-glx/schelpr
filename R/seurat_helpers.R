@@ -64,7 +64,7 @@ aggregate_log_normalized_expression <- function(x, group, group_name = deparse1(
   #subset to detected genes
   x <- x[, mean_counts_of_gene>0]
 
-  total_counts_of_group_x_gene <- as.matrix(Matrix.utils::aggregate.Matrix(x, group))
+  total_counts_of_group_x_gene <- as.matrix(aggregate.Matrix(x, group))
   n_cells_of_group <- tabulate(group)
   total_counts_of_group <- Matrix::rowSums(total_counts_of_group_x_gene)
 
@@ -74,7 +74,7 @@ aggregate_log_normalized_expression <- function(x, group, group_name = deparse1(
   x <- log1p(x * size_factor)
 
 
-  x_mean <- as.matrix(Matrix.utils::aggregate.Matrix(x, group) / n_cells_of_group)
+  x_mean <- as.matrix(aggregate.Matrix(x, group) / n_cells_of_group)
   x_var <- as.matrix(aggregate_var.Matrix(x, group))
   n_genes <- ncol(x_mean)
 
