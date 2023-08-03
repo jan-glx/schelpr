@@ -1,13 +1,13 @@
 Package: schelpr
 Title: scHelpR - single cell helper package
-Version: 0.0.9018
+Version: 0.0.9019
 Authors@R: 
   person(given = "Jan",
          family = "Gleixner",
          role = c("aut", "cre"),
          email = "jan.gleinxer@gmail.com",
          comment = c(ORCID = "0000-0001-5006-7375"))
-Description: pronounced "shellp R". Contains a random collection of helper functions that have yet to make it into appropriate packages.
+Description: A random collection of helper functions that have yet to make it into appropriate packages
 Imports:
   assertthat,
   boot,
@@ -43,4 +43,4 @@ BiocViews:
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
