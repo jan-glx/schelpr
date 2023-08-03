@@ -311,7 +311,9 @@ StatBin2dInteger <- ggproto("StatBin2dInteger", StatBin2d,
                                 ymax <- bins_y_lower[y + 1]
                                 width <- xmax - xmin
                                 height <- ymax - ymin
-                                density <- count / width / height
+                                total_width <- max(xmax) - min(xmin)
+                                total_height <- max(ymax) - min(ymin)
+                                density <- count / (width/total_width) / (height/total_height)
                               })
 
                               # Compute the centers of the bins
@@ -324,8 +326,10 @@ StatBin2dInteger <- ggproto("StatBin2dInteger", StatBin2d,
                                 xmax = Inf, #get_out_domain(scales$x)[2],
                                 ymin = -Inf, #get_out_domain(scales$y)[1],
                                 ymax = Inf, #get_out_domain(scales$y)[2],
-                                width = NA,
-                                height= NA,
+                                width = Inf,
+                                height= Inf,
+                                total_width = Inf,
+                                total_height = Inf,
                                 density = 0
                                 ), bin_data)
 
