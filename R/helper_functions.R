@@ -54,7 +54,7 @@ setMethod(".my_rowVars", "dgCMatrix", function(x, center=NULL) {
 #' @md
 #' @param x a `n` x `p` Matrix or object coercible to one
 #' @param group a factor or a object coercible to one specifying the grouping of rows of `x` into `k` groups
-#' @return a `k` x `p` [[Matrix::dgCMatrix]] of values of `x` aggragated by `group`
+#' @return a `k` x `p` [`dgCMatrix`][Matrix::dgCMatrix-class] of values of `x` aggragated by `group`
 #' @import Matrix
 #' @export
 aggregate.Matrix <- function(x, group, fun ="sum") {

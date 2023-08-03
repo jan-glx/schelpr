@@ -13,7 +13,7 @@ for each column estimate per group (of rows) mean}
 \item{group}{a factor or a object coercible to one specifying the grouping of rows of \code{x} into \code{k} groups}
 }
 \value{
-a \code{k} x \code{p} [\link[Matrix:dgCMatrix]{Matrix::dgCMatrix}] of values of \code{x} aggragated by \code{group}
+a \code{k} x \code{p} \code{\link[Matrix:dgCMatrix-class]{dgCMatrix}} of values of \code{x} aggragated by \code{group}
 }
 \description{
 aggregate.Matrix
