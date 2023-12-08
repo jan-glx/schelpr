@@ -75,7 +75,7 @@ bin_it <- function(x, nbins = 5L) {
   res <- partition_path(weights, nbins)
   breaks <-vx[c(1, res)]
   labels <- paste0(rep(c("[", "("), c(1, nbins-1)), breaks[-(nbins+1)],",", breaks[-1],"]")
-  factor(findInterval(x,  breaks[-1], left.open = TRUE, rightmost.closed = TRUE), levels= seq_len(nbins), labels = labels, ordered = TRUE)
+  factor(findInterval(x,  breaks, left.open = TRUE, rightmost.closed = TRUE), levels= seq_len(nbins+1), labels = c(labels[1], labels), ordered = TRUE)
 }
 
 #'
