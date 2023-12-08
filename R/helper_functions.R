@@ -165,7 +165,7 @@ shuffle.vector <- function(object) object[sample(length(object))]
 #' @examples
 #' sparse2long(Matrix::spMatrix(1:3,2:4,3:5, ncol=4, nrow=3))
 sparse2long <- function(mat, value_name = "value") {
-  mat <- as(mat, "dgTMatrix")
+  mat <- as(mat, "TsparseMatrix")
   dt <- data.table(row = mat@i + 1, col = mat@j + 1, value = mat@x)
   if (!is.null(mat@Dimnames[[1]])) dt[, row := mat@Dimnames[[1]][row]]
   if (!is.null(names(mat@Dimnames)[1])) setnames(dt, "row", names(mat@Dimnames)[1])
