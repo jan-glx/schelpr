@@ -88,7 +88,7 @@ GeomSplitTile <- ggproto(
 )
 
 #' @export
-scale_split <- function(..., scale_name="scale_direction", palette = function(n) if(n>2) error(paste0(scale_name, " can handle at most 2 levels")) else c(FALSE, TRUE) ) discrete_scale(aesthetics = "split", scale_name=scale_name, palette = palette, ... )
+scale_split <- function(..., scale_name="scale_direction", palette = function(n) if(n>2) stop(paste0(scale_name, " can handle at most 2 levels")) else c(FALSE, TRUE) ) discrete_scale(aesthetics = "split", scale_name=scale_name, palette = palette, ... )
 
 
 #df <- reshape2::melt(UCBAdmissions)
