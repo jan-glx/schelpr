@@ -7,7 +7,7 @@ Authors@R:
          role = c("aut", "cre"),
          email = "jan.gleinxer@gmail.com",
          comment = c(ORCID = "0000-0001-5006-7375"))
-Description: A random collection of helper functions that have yet to make it into appropriate packages
+Description: A random collection of helper functions that have yet to make it into appropriate packages. Use with care, consider copying individual functions to you codebase
 Imports:
   assertthat,
   boot,
