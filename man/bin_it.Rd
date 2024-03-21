@@ -22,10 +22,10 @@ to determine the bin edges, ensuring a more informative binning process compared
 It can be considered a better version of base:cut
 }
 \details{
-The function first checks for input validity, ensuring that `x` is non-empty
-and `nbins` is a valid integer greater than or equal to 1. It then computes the ECDF
+The function first checks for input validity, ensuring that \code{x} is non-empty
+and \code{nbins} is a valid integer greater than or equal to 1. It then computes the ECDF
 of the input vector and applies an optimal binning algorithm (using find_best_partioning)
-to find the best bin edges based on the desired number of bins. If `nbins` is set to 1,
+to find the best bin edges based on the desired number of bins. If \code{nbins} is set to 1,
 the function returns an empty matrix.
 }
 \examples{
