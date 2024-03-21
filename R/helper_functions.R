@@ -183,9 +183,9 @@ sparse2long <- function(mat, value_name = "value") {
 long2sparse <- function(rows, cols, values, dimname_rows = base::deparse1(substitute(rows)), dimname_cols = base::deparse1(substitute(cols))) {
   force(dimname_rows)
   force(dimname_cols)
-  rows <- factor(rows)
-  cols <- factor(cols)
+  rows <- as.factor(rows)
+  cols <- as.factor(cols)
   dimnames <- list(levels(rows), levels(cols))
   names(dimnames) <- c(dimname_rows, dimname_cols)
-  Matrix::sparseMatrix(i = as.integer(rows), j = as.integer(cols), x = values, dimnames = dimnames)
+  Matrix::sparseMatrix(i = as.integer(rows), j = as.integer(cols), x = values, dims = sapply(dimnames, length), dimnames = dimnames)
 }
