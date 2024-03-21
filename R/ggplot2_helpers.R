@@ -22,3 +22,11 @@ print_by <- function(x, by, plot) {
 
 #' @export
 fix_width_lab <- function(lab, width=40) paste0(paste0(rep(" ", width), collapse = ""), "\n", lab)
+
+#' Continuous fill scale that is symmetric around 0
+#' @param ... arguments passed to  [ggplot2::scale_fill_continuous()]
+#' @param limit Either a function of the data range or a scalar, defining the upper limit used to compute the limits. ignored if `limits` is specified.
+#' @param limits the limits passed to [ggplot2::scale_fill_continuous()]
+#' @export
+#' @seealso [ggplot2::scale_fill_continuous()]
+scale_fill_symetric <- function(..., limit = \(range) max(abs(range)), limits = \(range) (if(is.function(limit)) limit(range) else range)*c(-1,1)) scale_fill_continuous(limits=limits, ...)
