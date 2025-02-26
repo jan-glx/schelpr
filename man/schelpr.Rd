@@ -19,3 +19,8 @@ NA
 NA
 }
 
+\author{
+\strong{Maintainer}: Jan Gleixner \email{jan.gleinxer@gmail.com} (\href{https://orcid.org/0000-0001-5006-7375}{ORCID})
+
+}
+\keyword{internal}

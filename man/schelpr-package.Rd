@@ -2,7 +2,6 @@
 % Please edit documentation in R/schelpr-package.R
 \docType{package}
 \name{schelpr-package}
-\alias{schelpr}
 \alias{schelpr-package}
 \title{schelpr: scHelpR - single cell helper package}
 \description{

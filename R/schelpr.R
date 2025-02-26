@@ -5,12 +5,12 @@
 #' @section plotting
 #' @section Seurat
 #' @section other
-#' @docType package
 #' @rawNamespace import(rlang, except = `:=`)
 #' @import data.table
 #' @rawNamespace import(stats, except = c(`cov2cor`, `toeplitz`, `update`))
 #' @import methods
-NULL
+#' @keywords internal
+"_PACKAGE"
 
 #' @importFrom magrittr `%T>%`
 #' @export
